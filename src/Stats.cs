@@ -1,6 +1,6 @@
 ﻿namespace Kuna.EventStore.Seeder;
 
-public class Stats
+internal class Stats
 {
     public Stats(Guid id)
     {

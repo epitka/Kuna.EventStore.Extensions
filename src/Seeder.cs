@@ -18,7 +18,7 @@ public static class Seeder
 
         var runner = scope.ServiceProvider.GetRequiredService<Runner>();
 
-        await runner.Start(runOptions, ct);
+        await runner.Start(runOptions, ct).ConfigureAwait(false);
     }
 }
 

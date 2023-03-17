@@ -3,12 +3,12 @@ using Kuna.EventStore.Seeder.Services;
 
 namespace Kuna.EventStore.Seeder;
 
-public interface IWorkerFactory
+internal interface IWorkerFactory
 {
     Worker GetWorker(int streamsCnt);
 }
 
-public class WorkerFactory : IWorkerFactory
+internal class WorkerFactory : IWorkerFactory
 {
     private readonly EventStoreClient client;
     private readonly IEventGeneratorFactory generatorFactory;

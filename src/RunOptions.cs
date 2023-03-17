@@ -3,7 +3,7 @@
 namespace Kuna.EventStore.Seeder;
 
 
-public class RunOptions
+internal class RunOptions
 {
     [Option('s', "streams", Required = false, HelpText = "Number of disctinct streams to write; default:100,000")]
     public int NumberOfStreams { get; set; } = 100_000;

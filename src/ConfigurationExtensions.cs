@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Resources;
 using EventStore.Client;
 using Kuna.EventStore.Seeder.Services;
 using Microsoft.Extensions.Configuration;
@@ -31,7 +32,6 @@ public static class ConfigurationExtensions
 
                 return new EventStoreClient(settings);
             });
-
 
         return services;
     }

@@ -1,4 +1,4 @@
 ﻿namespace Kuna.EventStore.Seeder;
 
-public record WorkerOptions(
+internal record WorkerOptions(
     int NumberOfStreams);

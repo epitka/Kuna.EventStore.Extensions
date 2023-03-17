@@ -50,11 +50,9 @@ var a = host.Build();
 
 await a.StartAsync(ct);
 
-// read arguments
-
 await Seeder.Run(args, a.Services, ct);
 
-await a.StopAsync(cts.Token);
+await a.StopAsync(ct);
 
 // bootstrap DI
 

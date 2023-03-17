@@ -2,4 +2,4 @@
 
 namespace Kuna.EventStore.Seeder;
 
-public record struct EventEnvelope(string streamId, EventData EventData);
+internal record struct EventEnvelope(string streamId, EventData EventData);

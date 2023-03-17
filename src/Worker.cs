@@ -4,11 +4,11 @@ using Kuna.EventStore.Seeder.Services;
 
 namespace Kuna.EventStore.Seeder;
 
-public class Worker
+internal class Worker
 {
     private static readonly Random random = Random.Shared;
 
-    public readonly Channel<EventEnvelope> channel;
+    private readonly Channel<EventEnvelope> channel;
     private readonly EventStoreClient client;
     private readonly IEventDataFactory eventDataFactory;
     private readonly IEventsGenerator generator;
@@ -53,11 +53,11 @@ public class Worker
             this.StartSource(this.workerOptions, cancellationToken);
         }
 
-        await t;
+        await t.ConfigureAwait(false);
 
         progress.Report(this.stats);
 
-        await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+        await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken).ConfigureAwait(false);
     }
 
     private async Task StartSink(CancellationToken cancellationToken)
@@ -67,7 +67,7 @@ public class Worker
         this.totalWritten = 0;
         var ed = new EventData[1];
 
-        while (await this.channel.Reader.WaitToReadAsync(cts.Token))
+        while (await this.channel.Reader.WaitToReadAsync(cts.Token).ConfigureAwait(false))
         {
             while (this.channel.Reader.TryRead(out var envelope))
             {
@@ -160,7 +160,7 @@ public class Worker
             {
                 var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
 
-                while (await timer.WaitForNextTickAsync(ct))
+                while (await timer.WaitForNextTickAsync(ct).ConfigureAwait(false))
                 {
                     this.stats.TotalEventsGenerated = this.totalEvents;
                     this.stats.TotalEventsWritten = this.totalWritten;

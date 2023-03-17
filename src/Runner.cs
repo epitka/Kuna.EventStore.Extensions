@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Kuna.EventStore.Seeder;
 
-public class Runner
+internal class Runner
 {
     private readonly IWorkerFactory workerFactory;
     private readonly ILogger<Runner> logger;
@@ -44,7 +44,7 @@ public class Runner
             tasks.Add(t);
         }
 
-        await Task.WhenAll(tasks);
+        await Task.WhenAll(tasks).ConfigureAwait(false);
     }
 
     private static Progress<Stats> SetUpProgress(CancellationToken ct)
@@ -74,7 +74,7 @@ public class Runner
         _ = Task.Run(
             async () =>
             {
-                while (await statsTimer.WaitForNextTickAsync(ct))
+                while (await statsTimer.WaitForNextTickAsync(ct).ConfigureAwait(false))
                 {
                     if (cts.IsCancellationRequested)
                     {
