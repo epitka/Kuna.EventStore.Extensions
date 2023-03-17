@@ -27,6 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="CommandLineParser" />
         <PackageReference Include="EventStore.Client.Grpc" Version="22.0.0" />
         <PackageReference Include="EventStore.Client.Grpc.Streams" Version="22.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />

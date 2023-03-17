@@ -7,6 +7,7 @@ using SeederExample;
 using SeederExample.Events;
 
 var cts = new CancellationTokenSource();
+var ct = cts.Token;
 Console.CancelKeyPress += (s, e) =>
 {
     Console.WriteLine("Canceling...");
@@ -14,9 +15,17 @@ Console.CancelKeyPress += (s, e) =>
     e.Cancel = true;
 };
 
+var host = Host.CreateDefaultBuilder();
+
+var cfg = new ConfigurationBuilder()
+          .AddJsonFile("appsettings.json")
+          .Build();
+
+// provide a func to discover events definitions. It can be as in this example by marker interface.
 Type[] EventsDiscoveryFunc(Assembly[] assemblies)
 {
     var interfaceType = typeof(IAggregateEvent);
+
     var eventTypes = assemblies.SelectMany(i => i.GetTypes())
                                .Where(x => interfaceType.IsAssignableFrom(x))
                                .ToArray();
@@ -24,46 +33,29 @@ Type[] EventsDiscoveryFunc(Assembly[] assemblies)
     return eventTypes;
 }
 
-IEventsGenerator EventsGeneratorFactory()
-{
-    return new EventsGenerator();
-}
-
-var h = Host.CreateDefaultBuilder();
-
-var cfg = new ConfigurationBuilder()
-          .AddJsonFile("appsettings.json")
-          .Build();
-
-h.ConfigureServices(
+host.ConfigureServices(
     (c, s) =>
     {
+        // wire up Seeder services
         s.AddEventStoreSeeder(
             cfg,
             new[] { typeof(Program).Assembly },
-            EventsDiscoveryFunc,
-            EventsGeneratorFactory);
+            EventsDiscoveryFunc);
 
-        s.AddTransient<IEventsGenerator, EventsGenerator>();
+        // wire up your implementation of the events generator and factory
+        s.AddSingleton<IEventGeneratorFactory, EventsGeneratorFactory>();
     });
 
-var a = h.Build();
+var a = host.Build();
 
-await a.StartAsync(cts.Token);
+await a.StartAsync(ct);
+
 // read arguments
 
-var runOptions = new RunOptions(
-    10_000,
-    50);
-
-var runner = a.Services.GetRequiredService<Runner>();
-
-await runner.Start(runOptions, cts.Token);
+await Seeder.Run(args, a.Services, ct);
 
 await a.StopAsync(cts.Token);
 
 // bootstrap DI
-
-
 
 Console.WriteLine("Process finished ");

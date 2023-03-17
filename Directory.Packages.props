@@ -6,6 +6,7 @@
     <PackageVersion Include="AutoFixture" Version="4.17.0" />
     <PackageVersion Include="AutoFixture.AutoFakeItEasy" Version="4.17.0" />
     <PackageVersion Include="AutoFixture.Xunit2" Version="4.17.0" />
+    <PackageVersion Include="CommandLineParser" Version="2.9.1" />
     <PackageVersion Include="coverlet.collector" Version="3.2.0" />
     <PackageVersion Include="DeepEqual" Version="4.2.1" />
     <PackageVersion Include="EventStore.Client.Grpc" Version="22.0.0" />

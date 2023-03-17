@@ -12,14 +12,13 @@ public static class ConfigurationExtensions
         this IServiceCollection services,
         IConfiguration configuration,
         Assembly[] assembliesWithAggregateEvents,
-        Func<Assembly[], Type[]> aggregateEventsDiscoverFunc,
-        Func<IEventsGenerator> eventsGeneratorFunc)
+        Func<Assembly[], Type[]> aggregateEventsDiscoverFunc)
     {
         services.AddSingleton<IEventTypeMapper>(sp => new EventTypeMapper(assembliesWithAggregateEvents, aggregateEventsDiscoverFunc))
                 .AddSingleton<IEventStoreSerializer, JsonEventStoreSerializer>()
                 .AddSingleton<IEventMetadataFactory, EventMetadataFactory>()
                 .AddSingleton<IEventDataFactory, EventDataFactory>()
-                .AddSingleton(eventsGeneratorFunc)
+                .AddSingleton<IWorkerFactory, WorkerFactory>()
                 .AddSingleton<Runner>();
 
         services.AddSingleton<EventStoreClient>(

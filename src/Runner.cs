@@ -1,26 +1,19 @@
 ﻿using System.Collections.Concurrent;
-using EventStore.Client;
-using Kuna.EventStore.Seeder.Services;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 
 namespace Kuna.EventStore.Seeder;
 
 public class Runner
 {
-    private readonly Func<IEventsGenerator> eventsGeneratorFunc;
-    private readonly IEventDataFactory eventDataFactory;
-    private readonly EventStoreClient client;
+    private readonly IWorkerFactory workerFactory;
     private readonly ILogger<Runner> logger;
 
     public Runner(
-        Func<IEventsGenerator> eventsGeneratorFunc,
-        IEventDataFactory eventDataFactory,
-        EventStoreClient client,
+        IWorkerFactory workerFactory,
         ILogger<Runner> logger)
     {
-        this.eventsGeneratorFunc = eventsGeneratorFunc;
-        this.eventDataFactory = eventDataFactory;
-        this.client = client;
+        this.workerFactory = workerFactory;
         this.logger = logger;
     }
 
@@ -28,13 +21,39 @@ public class Runner
         RunOptions runOptions,
         CancellationToken ct)
     {
+        var progress = SetUpProgress(ct);
+
         var streamsPerWorker = runOptions.NumberOfStreams / runOptions.NumberOfWorkers;
 
         var tasks = new List<Task>();
 
-        var statsMap = new ConcurrentDictionary<Guid, Stats>();
+        // in case of fractions add diff to first stream
+        var diff = runOptions.NumberOfStreams - runOptions.NumberOfWorkers * streamsPerWorker;
 
+        for (var i = 0; i < runOptions.NumberOfWorkers; i++)
+        {
+            if (i != 0)
+            {
+                diff = 0;
+            }
+
+            var worker = this.workerFactory.GetWorker(streamsPerWorker + diff);
+
+            var t = worker.Run(progress, ct);
+
+            tasks.Add(t);
+        }
+
+        await Task.WhenAll(tasks);
+    }
+
+    private static Progress<Stats> SetUpProgress(CancellationToken ct)
+    {
+        var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+
+        var statsMap = new ConcurrentDictionary<Guid, Stats>();
         var progress = new Progress<Stats>();
+
 
         progress.ProgressChanged += (sender, stats) =>
         {
@@ -46,7 +65,6 @@ public class Runner
             {
                 while (!statsMap.TryAdd(stats.StatsId, stats))
                 {
-                    Console.WriteLine("oops");
                 }
             }
         };
@@ -58,6 +76,11 @@ public class Runner
             {
                 while (await statsTimer.WaitForNextTickAsync(ct))
                 {
+                    if (cts.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
                     var totals = new Stats(Guid.NewGuid());
 
                     foreach (var entry in statsMap)
@@ -71,31 +94,16 @@ public class Runner
                     }
 
                     Console.WriteLine($"{totals.TotalEventsGenerated} events generated for {totals.TotalStreamsGenerated} streams; written: {totals.TotalEventsWritten}");
+
+                    if (totals.TotalEventsWritten == totals.TotalEventsGenerated)
+                    {
+                        Console.WriteLine("All events written to EventStore");
+                        cts.Cancel();
+                    }
                 }
             },
-            ct);
+            cts.Token);
 
-        // in case of fractions add diff to first stream
-        var diff = runOptions.NumberOfStreams - runOptions.NumberOfWorkers * streamsPerWorker;
-
-        for (var i = 0; i < runOptions.NumberOfWorkers; i++)
-        {
-            if (i != 0)
-            {
-                diff = 0;
-            }
-
-            var worker = new Worker(
-                this.eventDataFactory,
-                this.client,
-                this.eventsGeneratorFunc.Invoke(),
-                new WorkerOptions(streamsPerWorker + diff));
-
-            var t = worker.Run(progress, ct);
-
-            tasks.Add(t);
-        }
-
-        await Task.WhenAll(tasks);
+        return progress;
     }
 }
