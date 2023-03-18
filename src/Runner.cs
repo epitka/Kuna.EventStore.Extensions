@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 
 namespace Kuna.EventStore.Seeder;
@@ -21,7 +20,7 @@ internal class Runner
         RunOptions runOptions,
         CancellationToken ct)
     {
-        var progress = SetUpProgress(ct);
+        var progress = SetUpProgress(this.logger, ct);
 
         var streamsPerWorker = runOptions.NumberOfStreams / runOptions.NumberOfWorkers;
 
@@ -47,7 +46,7 @@ internal class Runner
         await Task.WhenAll(tasks).ConfigureAwait(false);
     }
 
-    private static Progress<Stats> SetUpProgress(CancellationToken ct)
+    private static Progress<Stats> SetUpProgress(ILogger logger, CancellationToken ct)
     {
         var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
 
@@ -93,11 +92,15 @@ internal class Runner
                         totals.TotalStreamsStarted += s.TotalStreamsStarted;
                     }
 
-                    Console.WriteLine($"{totals.TotalEventsGenerated} events generated for {totals.TotalStreamsGenerated} streams; written: {totals.TotalEventsWritten}");
+                    logger.LogInformation(
+                        "{TotalEventsGenerated} events generated for {TotalStreamsGenerated} streams; written: {TotalEventsWritten}",
+                        totals.TotalEventsGenerated,
+                        totals.TotalStreamsGenerated,
+                        totals.TotalEventsWritten);
 
                     if (totals.TotalEventsWritten == totals.TotalEventsGenerated)
                     {
-                        Console.WriteLine("All events written to EventStore");
+                        logger.LogInformation("All events written to EventStore");
                         cts.Cancel();
                     }
                 }
