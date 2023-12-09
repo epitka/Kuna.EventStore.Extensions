@@ -1,32 +1,32 @@
-﻿using Kuna.EventStore.Seeder;
+using Kuna.EventStore.Seeder;
 using SeederExample.Events;
 
 namespace SeederExample;
 
 public class EventsGenerator : IEventsGenerator
 {
-    private const string cartStreamPrefix = "cart-";
+    private const string CartStreamPrefix = "cart-";
 
     public IEnumerable<(string StreamPrefix, object Event, string AggregateId)> Events()
     {
         var aggregateId = Guid.NewGuid();
         var stringAggregateId = aggregateId.ToString().Replace("-","");
 
-        yield return (cartStreamPrefix,  GetShoppingCartOpened(aggregateId), stringAggregateId);
+        yield return (CartStreamPrefix,  GetShoppingCartOpened(aggregateId), stringAggregateId);
 
         var added = GetShoppingCardProductAdded(aggregateId);
 
-        yield return (cartStreamPrefix, added, stringAggregateId);
+        yield return (CartStreamPrefix, added, stringAggregateId);
 
         if (DateTime.Now.Second % 2 == 0)
         {
-            yield return (cartStreamPrefix,GetShoppingCartProductRemoved(added), stringAggregateId);
+            yield return (CartStreamPrefix,GetShoppingCartProductRemoved(added), stringAggregateId);
 
-            yield return (cartStreamPrefix, GetShoppingCartCancelled(aggregateId), stringAggregateId);
+            yield return (CartStreamPrefix, GetShoppingCartCancelled(aggregateId), stringAggregateId);
         }
         else
         {
-            yield return ( cartStreamPrefix, GetShoppingCardCartConfirmed(aggregateId), stringAggregateId);
+            yield return ( CartStreamPrefix, GetShoppingCardCartConfirmed(aggregateId), stringAggregateId);
         }
     }
 

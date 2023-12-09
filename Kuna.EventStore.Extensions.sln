@@ -19,6 +19,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		stylecop.ruleset = stylecop.ruleset
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Subscriptions", "Subscriptions", "{D52260F8-2E52-4678-95B2-EFE674481A8A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kuna.EventStore.Subscriptions", "Subscriptions\src\Kuna.EventStore.Subscriptions.csproj", "{707C70E4-9460-4E5C-AEB3-6A2477F0937F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,10 @@ Global
 		{625AA497-C9B7-4FF7-BA5A-569FCC12BC7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{625AA497-C9B7-4FF7-BA5A-569FCC12BC7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{625AA497-C9B7-4FF7-BA5A-569FCC12BC7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{707C70E4-9460-4E5C-AEB3-6A2477F0937F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{707C70E4-9460-4E5C-AEB3-6A2477F0937F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{707C70E4-9460-4E5C-AEB3-6A2477F0937F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{707C70E4-9460-4E5C-AEB3-6A2477F0937F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -40,6 +48,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{2ED56522-725E-40FF-8869-4BEB425CD1D2} = {1A3C1D9E-7104-488F-8E03-B7AD400781A3}
 		{625AA497-C9B7-4FF7-BA5A-569FCC12BC7B} = {1A3C1D9E-7104-488F-8E03-B7AD400781A3}
+		{707C70E4-9460-4E5C-AEB3-6A2477F0937F} = {D52260F8-2E52-4678-95B2-EFE674481A8A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {45E1443C-CEC7-434B-8B6C-04EEF17B1BF9}

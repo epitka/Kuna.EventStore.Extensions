@@ -28,12 +28,13 @@
 
     <ItemGroup>
         <PackageReference Include="CommandLineParser" />
-        <PackageReference Include="EventStore.Client.Grpc"/>
-        <PackageReference Include="EventStore.Client.Grpc.Streams"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions"/>
-        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions"/>
-        <PackageReference Include="Newtonsoft.Json"/>
-        <PackageReference Include="Serilog"/>
+        <PackageReference Include="EventStore.Client.Grpc" />
+        <PackageReference Include="EventStore.Client.Grpc.Streams" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+        <PackageReference Include="Newtonsoft.Json" />
+        <PackageReference Include="Serilog" />
     </ItemGroup>
 
 </Project>

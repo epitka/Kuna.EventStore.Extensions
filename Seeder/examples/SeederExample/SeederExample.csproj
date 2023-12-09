@@ -33,6 +33,7 @@
       <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
       <PackageReference Include="Serilog" />
       <PackageReference Include="Serilog.Sinks.Console" />
+
     </ItemGroup>
 
     <ItemGroup>
