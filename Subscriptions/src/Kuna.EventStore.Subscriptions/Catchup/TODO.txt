@@ -1,0 +1,6 @@
+
+Catchup stream processing
+    * calculate current position of the stream processing, report metrics and estimate the time to finish the processing
+    * add Polly retry for restart of the stream subscriber
+
+Documentation and examples

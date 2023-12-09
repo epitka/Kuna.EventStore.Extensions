@@ -3,11 +3,12 @@
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <CodeAnalysisRuleSet>../stylecop.ruleset</CodeAnalysisRuleSet>
+        <CodeAnalysisRuleSet>../../../stylecop.ruleset</CodeAnalysisRuleSet>
         <NoWarn>$(NoWarn);1591</NoWarn>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <LangVersion>default</LangVersion>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
+        <OutputType>Exe</OutputType>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -23,16 +24,25 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <AdditionalFiles Include="../stylecop.json" />
+        <AdditionalFiles Include="..\..\..\stylecop.json" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="CommandLineParser" />
-        <PackageReference Include="EventStore.Client.Grpc" Version="22.0.0" />
-        <PackageReference Include="EventStore.Client.Grpc.Streams" Version="22.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="CommandLineParser" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" />
+      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+      <PackageReference Include="Serilog" />
+      <PackageReference Include="Serilog.Sinks.Console" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Kuna.EventStore.Seeder.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

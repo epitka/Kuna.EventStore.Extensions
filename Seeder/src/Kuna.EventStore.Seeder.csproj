@@ -7,8 +7,7 @@
         <NoWarn>$(NoWarn);1591</NoWarn>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <LangVersion>default</LangVersion>
-        <TargetFramework>net6.0</TargetFramework>
-        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -28,21 +27,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Kuna.EventStore.Seeder.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="CommandLineParser" />
-      <PackageReference Include="Microsoft.Extensions.Hosting" />
-      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
-      <PackageReference Include="Serilog" />
-      <PackageReference Include="Serilog.Sinks.Console" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Update="appsettings.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+        <PackageReference Include="CommandLineParser" />
+        <PackageReference Include="EventStore.Client.Grpc"/>
+        <PackageReference Include="EventStore.Client.Grpc.Streams"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions"/>
+        <PackageReference Include="Newtonsoft.Json"/>
+        <PackageReference Include="Serilog"/>
     </ItemGroup>
 
 </Project>

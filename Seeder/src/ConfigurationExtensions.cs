@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Resources;
 using EventStore.Client;
 using Kuna.EventStore.Seeder.Services;
@@ -25,8 +25,15 @@ public static class ConfigurationExtensions
         services.AddSingleton<EventStoreClient>(
             sp =>
             {
+                var connectionString = configuration.GetConnectionString("EventStore");
+
+                if (connectionString is null)
+                {
+                    throw new InvalidOperationException("EventStore connection string is not found.");
+                }
+
                 var settings = EventStoreClientSettings
-                    .Create(configuration.GetConnectionString("EventStore"));
+                    .Create(connectionString);
 
                 settings.ConnectionName = "kuna.eventstore.seeder-" + Guid.NewGuid();
 
