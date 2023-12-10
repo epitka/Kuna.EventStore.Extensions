@@ -6,7 +6,7 @@ public interface IResolvedEventSource
 
     void Stop();
 
-    IAsyncEnumerable<ResolvedEvent> ResolvedEvents { get; }
+    IAsyncEnumerable<ResolvedEvent> ResolvedEvents(CancellationToken ct);
 }
 
 public class ResolvedEventSource(
@@ -17,23 +17,17 @@ public class ResolvedEventSource(
 {
 
     // TODO: make this configurable
-    private readonly Channel<ResolvedEvent> channel = Channel.CreateBounded<ResolvedEvent>(10_000);
+    private readonly Channel<ResolvedEvent> channel = Channel.CreateBounded<ResolvedEvent>(100_000);
 
     protected override async Task OnEventAppeared(
      StreamSubscription streamSubscription,
      ResolvedEvent resolvedEvent,
      CancellationToken ct)
     {
-        // skip system events
-        if (resolvedEvent.OriginalStreamId.StartsWith('$'))
-        {
-            return;
-        }
-
         await this.channel.Writer!.WriteAsync(resolvedEvent, ct);
     }
 
-    public IAsyncEnumerable<ResolvedEvent> ResolvedEvents => this.channel.Reader.ReadAllAsync();
+    public IAsyncEnumerable<ResolvedEvent> ResolvedEvents(CancellationToken ct=default) => this.channel.Reader.ReadAllAsync(ct);
 
 }
 

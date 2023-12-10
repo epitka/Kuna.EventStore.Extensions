@@ -1,4 +1,4 @@
-﻿using System.Threading.Channels;
+using System.Threading.Channels;
 using EventStore.Client;
 using Kuna.EventStore.Seeder.Services;
 
@@ -6,7 +6,7 @@ namespace Kuna.EventStore.Seeder;
 
 internal class Worker
 {
-    private static readonly Random random = Random.Shared;
+    private static readonly Random Randomizer = Random.Shared;
 
     private readonly Channel<EventEnvelope> channel;
     private readonly EventStoreClient client;
@@ -24,7 +24,7 @@ internal class Worker
     private int totalEvents;
     private int totalWritten;
 
-    private readonly Guid WorkerId = Guid.NewGuid();
+    private readonly Guid workerId = Guid.NewGuid();
 
     public Worker(
         IEventDataFactory eventDataFactory,
@@ -38,7 +38,7 @@ internal class Worker
         this.workerOptions = workerOptions;
 
         this.channel = Channel.CreateBounded<EventEnvelope>(this.workerOptions.NumberOfStreams * 100);
-        this.stats = new Stats(this.WorkerId);
+        this.stats = new Stats(this.workerId);
     }
 
     public async Task Run(IProgress<Stats> progress, CancellationToken cancellationToken)
@@ -124,11 +124,11 @@ internal class Worker
 
                         var envelope = new EventEnvelope(streamId, eventData);
 
-                        await Task.Delay(random.Next(10, 50), ct).ConfigureAwait(false);
+                        await Task.Delay(Randomizer.Next(10, 50), ct).ConfigureAwait(false);
 
                         while (!this.channel.Writer.TryWrite(envelope))
                         {
-                            await Task.Delay(random.Next(10, 50), ct).ConfigureAwait(false);
+                            await Task.Delay(Randomizer.Next(10, 50), ct).ConfigureAwait(false);
                         }
 
                         Interlocked.Increment(ref this.totalEvents);
